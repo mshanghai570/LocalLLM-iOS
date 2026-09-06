@@ -55,7 +55,7 @@ public final class LLMEngine: ObservableObject {
         }
         
         // Load on background thread
-        try await Task.detached(priority: .userInitiated) { [config] in
+        try await Task(priority: .userInitiated) { [config] in
             // Initialize llama.cpp backend
             llama_backend_init()
             
@@ -104,7 +104,7 @@ public final class LLMEngine: ObservableObject {
         isGenerating = true
         defer { isGenerating = false }
         
-        return try await Task.detached(priority: .userInitiated) { [config] in
+        return try await Task(priority: .userInitiated) { [config] in
             // Build full prompt with chat template
             let fullPrompt = self.buildPrompt(
                 system: systemPrompt,
