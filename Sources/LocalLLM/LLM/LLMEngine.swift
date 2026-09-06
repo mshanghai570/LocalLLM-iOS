@@ -289,30 +289,55 @@ public enum LLMError: LocalizedError {
 // These are defined in CLlama module - placeholders for compilation
 
 #if !canImport(CLlama)
-// Placeholder types for development without llama.cpp linked
+// Compile-safe placeholders for builds without llama.cpp linked.
 typealias llama_token = Int32
+struct llama_model_params { var n_gpu_layers: Int32 = 0 }
+struct llama_context_params {
+    var n_ctx: UInt32 = 0
+    var n_batch: UInt32 = 0
+    var n_threads: UInt32 = 0
+}
+struct llama_batch {
+    var logits: [Int32]
+    var n_tokens: Int32
+}
 func llama_backend_init() {}
 func llama_backend_free() {}
-func llama_model_default_params() -> Any { fatalError() }
-func llama_context_default_params() -> Any { fatalError() }
-func llama_load_model_from_file(_ path: String, _ params: Any) -> OpaquePointer? { nil }
-func llama_new_context_with_model(_ model: OpaquePointer, _ params: Any) -> OpaquePointer? { nil }
+func llama_model_default_params() -> llama_model_params { llama_model_params() }
+func llama_context_default_params() -> llama_context_params { llama_context_params() }
+func llama_load_model_from_file(_ path: String, _ params: llama_model_params) -> OpaquePointer? { nil }
+func llama_new_context_with_model(_ model: OpaquePointer, _ params: llama_context_params) -> OpaquePointer? { nil }
 func llama_free(_ ctx: OpaquePointer) {}
 func llama_free_model(_ model: OpaquePointer) {}
-func llama_batch_init(_ n: Int32, _ embd: Int32, _ seqs: Int32) -> Any { fatalError() }
-func llama_batch_free(_ batch: Any) {}
-func llama_batch_add(_ batch: inout Any, _ token: llama_token, _ pos: Int32, _ seqs: [Int32], _ logits: Bool) {}
-func llama_batch_clear(_ batch: inout Any) {}
-func llama_decode(_ ctx: OpaquePointer, _ batch: Any) -> Int32 { 0 }
+func llama_batch_init(_ n: Int32, _ embd: Int32, _ seqs: Int32) -> llama_batch {
+    llama_batch(logits: Array(repeating: 0, count: max(Int(n), 1)), n_tokens: 0)
+}
+func llama_batch_free(_ batch: llama_batch) {}
+func llama_batch_add(_ batch: inout llama_batch, _ token: llama_token, _ pos: Int32, _ seqs: [Int32], _ logits: Bool) {
+    batch.n_tokens += 1
+    if batch.logits.count < Int(batch.n_tokens) { batch.logits.append(0) }
+    batch.logits[Int(batch.n_tokens) - 1] = logits ? 1 : 0
+}
+func llama_batch_clear(_ batch: inout llama_batch) { batch.n_tokens = 0 }
+func llama_decode(_ ctx: OpaquePointer, _ batch: llama_batch) -> Int32 { 0 }
 func llama_get_logits_ith(_ ctx: OpaquePointer, _ i: Int32) -> UnsafeMutablePointer<Float>? { nil }
 func llama_n_vocab(_ model: OpaquePointer) -> Int32 { 0 }
-func llama_sample_top_k(_ ctx: OpaquePointer, _ candidates: inout Any, _ k: Int32, _ minKeep: Int) {}
-func llama_sample_top_p(_ ctx: OpaquePointer, _ candidates: inout Any, _ p: Float, _ minKeep: Int) {}
-func llama_sample_temp(_ ctx: OpaquePointer, _ candidates: inout Any, _ temp: Float) {}
-func llama_sample_token(_ ctx: OpaquePointer, _ candidates: inout Any) -> llama_token { 0 }
+func llama_sample_top_k(_ ctx: OpaquePointer, _ candidates: inout llama_token_data_array, _ k: Int32, _ minKeep: Int) {}
+func llama_sample_top_p(_ ctx: OpaquePointer, _ candidates: inout llama_token_data_array, _ p: Float, _ minKeep: Int) {}
+func llama_sample_temp(_ ctx: OpaquePointer, _ candidates: inout llama_token_data_array, _ temp: Float) {}
+func llama_sample_token(_ ctx: OpaquePointer, _ candidates: inout llama_token_data_array) -> llama_token { candidates.data.first?.id ?? 0 }
 func llama_token_is_eog(_ model: OpaquePointer, _ token: llama_token) -> Bool { false }
 func llama_token_to_piece(_ model: OpaquePointer, _ token: llama_token, _ buf: inout [CChar], _ length: Int32, _ special: Int32, _ render: Bool) -> Int32 { 0 }
 func llama_tokenize(_ model: OpaquePointer, _ text: String, _ textLen: Int32, _ tokens: inout [llama_token], _ maxTokens: Int32, _ addBos: Bool, _ special: Bool) -> Int32 { 0 }
 struct llama_token_data { var id: Int32; var logit: Float; var p: Float }
-struct llama_token_data_array { var data: UnsafeMutablePointer<llama_token_data>?; var size: Int; var sorted: Bool }
+struct llama_token_data_array {
+    var data: [llama_token_data]
+    var size: Int
+    var sorted: Bool
+    init(data: inout [llama_token_data], size: Int, sorted: Bool) {
+        self.data = data
+        self.size = size
+        self.sorted = sorted
+    }
+}
 #endif
