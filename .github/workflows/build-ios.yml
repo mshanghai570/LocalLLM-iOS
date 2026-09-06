@@ -10,6 +10,8 @@ jobs:
     runs-on: macos-14
     
     steps:
+      - find Sources -name "*.swift" -type f | sort
+      
       - name: Checkout
         uses: actions/checkout@v4
       
