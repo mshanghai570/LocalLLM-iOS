@@ -14,10 +14,10 @@ cat > "$project_dir/project.pbxproj" <<'PBXPROJ'
   objects = {
 
 /* Begin PBXBuildFile section */
-    A1000001 /* AgentOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000001 /* AgentOrchestrator.swift */; };
-    A1000002 /* LLMEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000002 /* LLMEngine.swift */; };
-    A1000003 /* LocalLLMApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000003 /* LocalLLMApp.swift */; };
-    A1000004 /* MCPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000004 /* MCPManager.swift */; };
+    A1000001 /* AgentOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1000006 /* AgentOrchestrator.swift */; };
+    A1000002 /* LLMEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1000007 /* LLMEngine.swift */; };
+    A1000003 /* LocalLLMApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1000008 /* LocalLLMApp.swift */; };
+    A1000004 /* MCPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1000009 /* MCPManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
