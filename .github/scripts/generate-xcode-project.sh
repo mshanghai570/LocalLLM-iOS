@@ -35,7 +35,7 @@ cat > "$project_dir/project.pbxproj" <<'PBXPROJ'
 
 /* Begin PBXGroup section */
     C1000002 = {isa = PBXGroup; children = (C1000003, C1000004, C1000005,); sourceTree = "<group>"; };
-    C1000003 /* Sources */ = {isa = PBXGroup; children = (C1000006, C1000007, C1000008, C1000009,); path = Sources; sourceTree = "<group>"; };
+    C1000003 /* Sources */ = {isa = PBXGroup; children = (C1000006, C1000007, C1000008, C1000009,); path = Sources/LocalLLM; sourceTree = "<group>"; };
     C1000004 /* Products */ = {isa = PBXGroup; children = (B1000006 /* LocalLLM.app */,); name = Products; sourceTree = "<group>"; };
     C1000005 /* LocalLLM */ = {isa = PBXGroup; children = (B1000005 /* Info.plist */,); path = LocalLLM; sourceTree = "<group>"; };
     C1000006 /* AgentOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Agents/AgentOrchestrator.swift; sourceTree = "<group>"; };
