@@ -264,14 +264,14 @@ struct ThinkingIndicator: View {
 
 // MARK: - Data Models
 
-struct Message: Identifiable {
-    let id = UUID()
-    let role: Role
-    let content: String
-    var agentInfo: String? = nil
-    let timestamp = Date()
+public struct Message: Identifiable {
+    public let id = UUID()
+    public let role: Role
+    public let content: String
+    public var agentInfo: String? = nil
+    public let timestamp = Date()
     
-    enum Role {
+    public enum Role {
         case user
         case assistant
         case system
